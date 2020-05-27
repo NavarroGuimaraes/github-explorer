@@ -1,30 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, FormEvent } from 'react';
 import { FiChevronRight } from 'react-icons/fi';
 import logoImg from '../../assets/logo.svg';
 import { Title, Form, Repositories } from './styles';
 import api from '../../services/api';
+import Repository from '../../model/IRepository';
 
 const Dashboard: React.FC = () => {
+  const [repositories, setRepositories] = useState<Repository[]>([]);
+  const [typedRepo, setTypedRepo] = useState('');
+
+  async function handleSearchRepository(
+    event: FormEvent<HTMLFormElement>,
+  ): Promise<void> {
+    event.preventDefault();
+    const response = await api.get<Repository>(`repos/${typedRepo}`);
+    const repository = response.data;
+    console.log(repository);
+    setRepositories([...repositories, repository]);
+  }
+
   return (
     <>
       <img src={logoImg} alt="Github Explorer" />
       <Title>Explore repositórios no GitHub</Title>
-      <Form>
-        <input placeholder="Digite o repositório aqui" />
+      <Form onSubmit={handleSearchRepository}>
+        <input
+          value={typedRepo}
+          onChange={(e) => setTypedRepo(e.target.value)}
+          placeholder="Digite o repositório aqui"
+        />
         <button type="submit">Pesquisar</button>
       </Form>
       <Repositories>
-        <a href="teste">
-          <img
-            src="https://avatars1.githubusercontent.com/u/29528381?s=460&u=4afc1ff18c897786e2a4fd76787b1770ace98345&v=4"
-            alt="Navarro Silva"
-          />
-          <div>
-            <strong>TEste repositório</strong>
-            <p> Testeeee uhuuuu!</p>
-          </div>
-          <FiChevronRight size={20} />
-        </a>
+        {repositories.map((repository) => (
+          <a key={repository.full_name} href="teste">
+            <img
+              src={repository.owner.avatar_url}
+              alt={repository.owner.login}
+            />
+            <div>
+              <strong>{repository.full_name}</strong>
+              <p>{repository.description}</p>
+            </div>
+            <FiChevronRight size={20} />
+          </a>
+        ))}
       </Repositories>
     </>
   );
