@@ -22,7 +22,23 @@ export const Header = styled.header`
   }
 `;
 
-export const LoadMoreButtons = styled.div``;
+export const LoadMoreButtons = styled.div`
+  display: flex;
+  margin-top: 30px;
+  width: 100%;
+  height: 40px;
+  button {
+    border-color: #3d3d4d;
+    background-color: #fff;
+    display: flex;
+    border-radius: 5px;
+    justify-content: center;
+    height: 100%;
+    flex: 1;
+    align-items: center;
+    width: 100%;
+  }
+`;
 
 export const DivLoader = styled.div``;
 

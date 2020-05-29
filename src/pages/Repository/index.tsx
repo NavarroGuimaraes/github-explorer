@@ -137,7 +137,7 @@ const Repository: React.FC = () => {
           </a>
         ))}
       </Issues>
-      {is_loading_more ? (
+      {!is_loading_more ? (
         <LoadMoreButtons>
           {!are_all_loaded && (
             <button onClick={loadMore} type="button">
