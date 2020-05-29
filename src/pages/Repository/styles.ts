@@ -32,18 +32,24 @@ export const LoadMoreButtons = styled.div`
     border-color: #3d3d4d;
     background-color: #fff;
     text-decoration: none;
-    display: block;
-    border-width: 2px;
-    border-radius: 5px;
+    display: inline-block;
+    border: 0;
+    border-radius: 10px;
     text-align: center;
     height: 100%;
     flex: 1;
     width: 100%;
+    margin-right: 25px;
     transition: transform 0.5s;
     svg {
       margin-top: 5px;
       display: block;
       margin-left: 50%;
+    }
+
+    & + button {
+      margin-right: 0px;
+      margin-left: 25px;
     }
 
     &:hover {

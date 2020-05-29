@@ -25,8 +25,7 @@ interface RepositoryResponse extends IRepository {
 const Repository: React.FC = () => {
   // Variables
   const { params } = useRouteMatch<RepositoryParams>();
-  let are_all_repo_loaded = false;
-  let current_page = 1;
+  const are_all_repo_loaded = false;
   let is_loading_more = false;
   const are_all_loaded = false;
   const [repository, setRepository] = useState<RepositoryResponse | null>(null);
@@ -43,9 +42,6 @@ const Repository: React.FC = () => {
         setIssues(response.data);
       });
 
-    are_all_repo_loaded = false;
-    current_page = 1;
-
     // async function loadData(): Promise<void> {
     //   const [repositoryResposne, issuesResponse] = await Promise.all([
     //     api.get(`repos/${params.repository}`),
@@ -55,18 +51,28 @@ const Repository: React.FC = () => {
   }, [params.repository]);
 
   function loadMore(): void {
-    current_page += 1;
-    is_loading_more = true;
+    if (
+      issues.length > 0 &&
+      repository &&
+      issues.length === repository.open_issues_count
+    ) {
+      return;
+    }
+    let current_page: number;
+    if (issues.length > 0) {
+      current_page = issues.length / 3;
+    } else {
+      current_page = 1;
+    }
+    console.log(current_page);
     api
       .get(`repos/${params.repository}/issues?page=${current_page}&per_page=3`)
       .then((response) => {
-        setIssues([...issues, response.data]);
-        is_loading_more = false;
+        setIssues(issues.concat(response.data));
       });
   }
 
   function loadAll(): void {
-    current_page = 0;
     is_loading_more = true;
     api.get(`repos/${params.repository}/issues`).then((response) => {
       setIssues(response.data);
