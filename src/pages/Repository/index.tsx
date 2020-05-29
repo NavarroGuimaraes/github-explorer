@@ -2,9 +2,16 @@
 import React, { useEffect, useState } from 'react';
 import { useRouteMatch, Link } from 'react-router-dom';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import Loader from 'react-loader-spinner';
 import RepositoryParams from '../../model/IRepositoryParams';
 import api from '../../services/api';
-import { Header, RepositoryInfo, Issues } from './styles';
+import {
+  Header,
+  RepositoryInfo,
+  Issues,
+  LoadMoreButtons,
+  DivLoader,
+} from './styles';
 import logoImg from '../../assets/logo.svg';
 import IRepository from '../../model/IRepository';
 import IssuesInterface from '../../model/IIssues';
@@ -16,8 +23,12 @@ interface RepositoryResponse extends IRepository {
 }
 
 const Repository: React.FC = () => {
+  // Variables
   const { params } = useRouteMatch<RepositoryParams>();
-
+  let are_all_repo_loaded = false;
+  let current_page = 1;
+  let is_loading_more = false;
+  const are_all_loaded = false;
   const [repository, setRepository] = useState<RepositoryResponse | null>(null);
   const [issues, setIssues] = useState<IssuesInterface[]>([]);
 
@@ -32,6 +43,9 @@ const Repository: React.FC = () => {
         setIssues(response.data);
       });
 
+    are_all_repo_loaded = false;
+    current_page = 1;
+
     // async function loadData(): Promise<void> {
     //   const [repositoryResposne, issuesResponse] = await Promise.all([
     //     api.get(`repos/${params.repository}`),
@@ -39,6 +53,25 @@ const Repository: React.FC = () => {
     //   ]);
     // }
   }, [params.repository]);
+
+  function loadMore(): void {
+    current_page += 1;
+    is_loading_more = true;
+    api
+      .get(`repos/${params.repository}/issues?page=${current_page}&per_page=3`)
+      .then((response) => {
+        setIssues([...issues, response.data]);
+        is_loading_more = false;
+      });
+  }
+
+  function loadAll(): void {
+    current_page = 0;
+    is_loading_more = true;
+    api.get(`repos/${params.repository}/issues`).then((response) => {
+      setIssues(response.data);
+    });
+  }
 
   return (
     <>
@@ -77,7 +110,16 @@ const Repository: React.FC = () => {
           </ul>
         </RepositoryInfo>
       ) : (
-        <p>carregando...</p>
+        <DivLoader>
+          <Loader
+            type="TailSpin"
+            color="#00BFFF"
+            height={300}
+            width={300}
+            visible={is_loading_more}
+            timeout={0}
+          />
+        </DivLoader>
       )}
       <Issues>
         {issues.map((issue) => (
@@ -95,6 +137,29 @@ const Repository: React.FC = () => {
           </a>
         ))}
       </Issues>
+      {is_loading_more ? (
+        <LoadMoreButtons>
+          {!are_all_loaded && (
+            <button onClick={loadMore} type="button">
+              Carregar mais 3
+            </button>
+          )}
+          <button onClick={loadAll} type="button">
+            Carregar todos
+          </button>
+        </LoadMoreButtons>
+      ) : (
+        <DivLoader>
+          <Loader
+            type="TailSpin"
+            color="#00BFFF"
+            height={300}
+            width={300}
+            visible={is_loading_more}
+            timeout={0}
+          />
+        </DivLoader>
+      )}
     </>
   );
 };

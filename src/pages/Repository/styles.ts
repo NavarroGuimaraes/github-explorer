@@ -22,6 +22,10 @@ export const Header = styled.header`
   }
 `;
 
+export const LoadMoreButtons = styled.div``;
+
+export const DivLoader = styled.div``;
+
 export const Issues = styled.div`
   margin-top: 60px;
   a {
