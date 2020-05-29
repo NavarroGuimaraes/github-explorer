@@ -26,17 +26,29 @@ export const LoadMoreButtons = styled.div`
   display: flex;
   margin-top: 30px;
   width: 100%;
-  height: 40px;
+  height: 60px;
+
   button {
     border-color: #3d3d4d;
     background-color: #fff;
-    display: flex;
+    text-decoration: none;
+    display: block;
+    border-width: 2px;
     border-radius: 5px;
-    justify-content: center;
+    text-align: center;
     height: 100%;
     flex: 1;
-    align-items: center;
     width: 100%;
+    transition: transform 0.5s;
+    svg {
+      margin-top: 5px;
+      display: block;
+      margin-left: 50%;
+    }
+
+    &:hover {
+      transform: translateY(5px);
+    }
   }
 `;
 

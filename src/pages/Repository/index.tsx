@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import React, { useEffect, useState } from 'react';
 import { useRouteMatch, Link } from 'react-router-dom';
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiChevronLeft, FiChevronRight, FiChevronDown } from 'react-icons/fi';
 import Loader from 'react-loader-spinner';
 import RepositoryParams from '../../model/IRepositoryParams';
 import api from '../../services/api';
@@ -140,12 +140,16 @@ const Repository: React.FC = () => {
       {!is_loading_more ? (
         <LoadMoreButtons>
           {!are_all_loaded && (
-            <button onClick={loadMore} type="button">
-              Carregar mais 3
-            </button>
+            <>
+              <button onClick={loadMore} type="button">
+                <strong>Carregar mais 3</strong>
+                <FiChevronDown size={20} />
+              </button>
+            </>
           )}
           <button onClick={loadAll} type="button">
-            Carregar todos
+            <strong>Carregar todos</strong>
+            <FiChevronDown size={20} />
           </button>
         </LoadMoreButtons>
       ) : (
