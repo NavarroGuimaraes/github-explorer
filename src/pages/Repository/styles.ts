@@ -58,7 +58,22 @@ export const LoadMoreButtons = styled.div`
   }
 `;
 
-export const DivLoader = styled.div``;
+export const NoMoreIssues = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  margin-top: 20px;
+  strong {
+    color: #3d3d4d;
+    font-size: 20px;
+  }
+`;
+
+export const DivLoader = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+`;
 
 export const Issues = styled.div`
   margin-top: 60px;

@@ -11,6 +11,7 @@ import {
   Issues,
   LoadMoreButtons,
   DivLoader,
+  NoMoreIssues,
 } from './styles';
 import logoImg from '../../assets/logo.svg';
 import IRepository from '../../model/IRepository';
@@ -25,9 +26,7 @@ interface RepositoryResponse extends IRepository {
 const Repository: React.FC = () => {
   // Variables
   const { params } = useRouteMatch<RepositoryParams>();
-  const are_all_repo_loaded = false;
-  let is_loading_more = false;
-  const are_all_loaded = false;
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [repository, setRepository] = useState<RepositoryResponse | null>(null);
   const [issues, setIssues] = useState<IssuesInterface[]>([]);
 
@@ -51,6 +50,7 @@ const Repository: React.FC = () => {
   }, [params.repository]);
 
   function loadMore(): void {
+    setLoadingMore(true);
     if (
       issues.length > 0 &&
       repository &&
@@ -64,20 +64,21 @@ const Repository: React.FC = () => {
     } else {
       current_page = 1;
     }
-    console.log(current_page);
     api
       .get(
         `repos/${params.repository}/issues?page=${current_page + 1}&per_page=3`,
       )
       .then((response) => {
         setIssues(issues.concat(response.data));
+        setLoadingMore(false);
       });
   }
 
   function loadAll(): void {
-    is_loading_more = true;
+    setLoadingMore(true);
     api.get(`repos/${params.repository}/issues`).then((response) => {
       setIssues(response.data);
+      setLoadingMore(false);
     });
   }
 
@@ -124,7 +125,7 @@ const Repository: React.FC = () => {
             color="#00BFFF"
             height={300}
             width={300}
-            visible={is_loading_more}
+            visible={loadingMore}
             timeout={0}
           />
         </DivLoader>
@@ -145,29 +146,62 @@ const Repository: React.FC = () => {
           </a>
         ))}
       </Issues>
-      {!is_loading_more ? (
+      {repository && repository.open_issues_count !== issues.length ? (
         <LoadMoreButtons>
-          {!are_all_loaded && (
-            <>
-              <button onClick={loadMore} type="button">
-                <strong>Carregar mais 3</strong>
-                <FiChevronDown size={20} />
-              </button>
-            </>
-          )}
-          <button onClick={loadAll} type="button">
-            <strong>Carregar todos</strong>
-            <FiChevronDown size={20} />
-          </button>
+          <>
+            <button onClick={loadMore} type="button" disabled={loadingMore}>
+              {loadingMore ? (
+                <Loader
+                  type="TailSpin"
+                  color="#3d3d4d"
+                  height={30}
+                  visible={loadingMore}
+                  width={30}
+                  timeout={0}
+                />
+              ) : (
+                <>
+                  <strong>Carregar mais 3</strong>
+                  <FiChevronDown size={20} />
+                </>
+              )}
+            </button>
+
+            <button onClick={loadAll} type="button" disabled={loadingMore}>
+              {loadingMore ? (
+                <Loader
+                  type="TailSpin"
+                  color="#3d3d4d"
+                  height={30}
+                  visible={loadingMore}
+                  width={30}
+                  timeout={0}
+                />
+              ) : (
+                <>
+                  <strong>Carregar todos</strong>
+                  <FiChevronDown size={20} />
+                </>
+              )}
+            </button>
+          </>
         </LoadMoreButtons>
       ) : (
+        <NoMoreIssues>
+          {issues.length > 0 ? (
+            <strong>Todas as issues carregadas! :)</strong>
+          ) : (
+            <strong>Nenhuma issue a ser carregada! :)</strong>
+          )}
+        </NoMoreIssues>
+      )}
+      {loadingMore && (
         <DivLoader>
           <Loader
             type="TailSpin"
-            color="#00BFFF"
-            height={300}
-            width={300}
-            visible={is_loading_more}
+            color="#3d3d4d"
+            height={10}
+            width={10}
             timeout={0}
           />
         </DivLoader>
