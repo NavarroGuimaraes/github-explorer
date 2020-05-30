@@ -66,7 +66,9 @@ const Repository: React.FC = () => {
     }
     console.log(current_page);
     api
-      .get(`repos/${params.repository}/issues?page=${current_page}&per_page=3`)
+      .get(
+        `repos/${params.repository}/issues?page=${current_page + 1}&per_page=3`,
+      )
       .then((response) => {
         setIssues(issues.concat(response.data));
       });
