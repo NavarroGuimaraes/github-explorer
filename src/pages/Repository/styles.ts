@@ -22,6 +22,59 @@ export const Header = styled.header`
   }
 `;
 
+export const LoadMoreButtons = styled.div`
+  display: flex;
+  margin-top: 30px;
+  width: 100%;
+  height: 60px;
+
+  button {
+    border-color: #3d3d4d;
+    background-color: #fff;
+    text-decoration: none;
+    display: inline-block;
+    border: 0;
+    border-radius: 10px;
+    text-align: center;
+    height: 100%;
+    flex: 1;
+    width: 100%;
+    margin-right: 25px;
+    transition: transform 0.5s;
+    svg {
+      margin-top: 5px;
+      display: block;
+      margin-left: 50%;
+    }
+
+    & + button {
+      margin-right: 0px;
+      margin-left: 25px;
+    }
+
+    &:hover {
+      transform: translateY(5px);
+    }
+  }
+`;
+
+export const NoMoreIssues = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  margin-top: 20px;
+  strong {
+    color: #3d3d4d;
+    font-size: 20px;
+  }
+`;
+
+export const DivLoader = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+`;
+
 export const Issues = styled.div`
   margin-top: 60px;
   a {
